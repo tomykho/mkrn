@@ -1,0 +1,22 @@
+{
+  "name": "mkrn",
+  "version": "0.1.0",
+  "description": "MKRN.JS - Full-Stack JavaScript Using MongoDB, Koa, ReactJS, and Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/tomykho/mkrn.git"
+  },
+  "keywords": [
+    "mkrn"
+  ],
+  "author": "Tomy Kho",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tomykho/mkrn/issues"
+  },
+  "homepage": "https://github.com/tomykho/mkrn#readme"
+}
