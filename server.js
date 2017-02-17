@@ -31,14 +31,14 @@ app.use(mount(
 app.use(logger);
 
 // Include server routes as a middleware
-app.use(mount('/api', function(ctx) {
+app.use(mount('/api', (ctx) => {
 	require('./server/app').routes()(ctx);
 }));
 
 // Anything else gets passed to the client app's server rendering
-router.get('*', function(ctx, next) {
+router.get('*', (ctx, next) => {
 	const { req, res } = ctx;
-  require('./client/server-render')(req.path, function(err, page) {
+  require('./client/server-render')(req.path, (err, page) => {
     if (err) return next(err);
 		ctx.body = page;
   });
@@ -50,21 +50,25 @@ app.use(router.routes());
 // Ensure there's no important state in there!
 const watcher = chokidar.watch('./server');
 
-watcher.on('ready', function() {
-  watcher.on('all', function() {
+watcher.on('ready', () => {
+  watcher.on('all', () => {
     console.log("Clearing /server/ module cache from server");
-    Object.keys(require.cache).forEach(function(id) {
-      if (/[\/\\]server[\/\\]/.test(id)) delete require.cache[id];
+    Object.keys(require.cache).forEach((id) => {
+      if (/[\/\\]server[\/\\]/.test(id)) {
+        delete require.cache[id];
+      }
     });
   });
 });
 
 // Do "hot-reloading" of react stuff on the server
 // Throw away the cached client modules and let them be re-required next time
-compiler.plugin('done', function() {
+compiler.plugin('done', () => {
   console.log("Clearing /client/ module cache from server");
-  Object.keys(require.cache).forEach(function(id) {
-    if (/[\/\\]client[\/\\]/.test(id)) delete require.cache[id];
+  Object.keys(require.cache).forEach((id) => {
+    if (/[\/\\]client[\/\\]/.test(id)) {
+      delete require.cache[id];
+    }
   });
 });
 
