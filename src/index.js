@@ -1,31 +1,44 @@
-'use strict';
-
+import 'babel-polyfill';
 import Koa from 'koa';
 import Router from 'koa-router';
 import Logger from 'koa-logger';
+import serve from 'koa-static';
 import mount from 'koa-mount';
 import chokidar from 'chokidar';
-import config from './webpack.config';
-import webpack from 'webpack';
-import { devMiddleware, hotMiddleware } from 'koa-webpack-middleware';
-import cssModulesRequireHook from 'css-modules-require-hook';
+import config from '../webpack.config';
 
-cssModulesRequireHook({generateScopedName: '[path][name]-[local]'});
-const compiler = webpack(config);
 const app = new Koa();
-const webpackApp = new Koa();
 const router = new Router();
 const logger = new Logger();
 const PORT = 3000;
+const isDevelopment = process.env.NODE_ENV !== "production";
 
-// Serve hot-reloading bundle to client
-app.use(devMiddleware(compiler, {
-	publicPath: config.output.publicPath
-}));
-app.use(mount(
-	config.output.publicPath,
-	hotMiddleware(compiler)
-));
+console.log('(Server) Development:', isDevelopment);
+
+// Webpack
+if (isDevelopment) {
+  const webpack = require('webpack');
+  const koaWebpack = require('koa-webpack');
+
+  const compiler = webpack(config);  
+  app.use(koaWebpack({
+    compiler
+  }))
+
+  // Do "hot-reloading" of react stuff on the server
+  // Throw away the cached client modules and let them be re-required next time
+  compiler.plugin('done', () => {
+    console.log("Clearing /client/ module cache from server");
+    Object.keys(require.cache).forEach((id) => {
+      if (/[\/\\]client[\/\\]/.test(id)) {
+        delete require.cache[id];
+      }
+    });
+  });
+}
+else {
+  app.use(serve('public'));
+}
 
 // Request logger
 app.use(logger);
@@ -38,10 +51,16 @@ app.use(mount('/api', (ctx) => {
 // Anything else gets passed to the client app's server rendering
 router.get('*', (ctx, next) => {
 	const { req, res } = ctx;
-  require('./client/server-render')(req.path, (err, page) => {
-    if (err) return next(err);
-		ctx.body = page;
-  });
+  const { pathname } = req._parsedUrl;
+  if (pathname.split('.').length > 1) {
+    ctx.status = 403;
+  }
+  else {
+    require('./client/server-render')(req.path, (err, page) => {
+      if (err) return next(err);
+      ctx.body = page;
+    });
+  }
 });
 app.use(router.routes());
 
@@ -58,17 +77,6 @@ watcher.on('ready', () => {
         delete require.cache[id];
       }
     });
-  });
-});
-
-// Do "hot-reloading" of react stuff on the server
-// Throw away the cached client modules and let them be re-required next time
-compiler.plugin('done', () => {
-  console.log("Clearing /client/ module cache from server");
-  Object.keys(require.cache).forEach((id) => {
-    if (/[\/\\]client[\/\\]/.test(id)) {
-      delete require.cache[id];
-    }
   });
 });
 

@@ -5,8 +5,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
 
-// eslint-disable-next-line no-sync
-const template = fs.readFileSync(__dirname + '/../index.html', 'utf8');
+const template = fs.readFileSync(__dirname + '/../../index.html', 'utf8');
 
 function renderApp(path, callback) {
   const store = configureStore();

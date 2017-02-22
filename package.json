@@ -4,7 +4,11 @@
   "description": "MKRN.JS - Full-Stack JavaScript Using MongoDB, Koa, ReactJS, and Node.js",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node server"
+    "start": "babel-node src",
+    "build:client": "NODE_ENV=production webpack --progress --colors",
+    "build:server": "NODE_ENV=production babel src -d dist",
+    "build": "npm run build:client && npm run build:server",
+    "start:production": "NODE_ENV=production node dist"
   },
   "repository": {
     "type": "git",
@@ -20,29 +24,37 @@
   },
   "homepage": "https://github.com/tomykho/mkrn#readme",
   "dependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-core": "^6.23.1",
-    "babel-loader": "^6.2.10",
-    "babel-plugin-react-transform": "^2.0.2",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-es2015": "^6.22.0",
-    "babel-preset-react": "^6.23.0",
-    "babel-preset-react-hmre": "^1.1.1",
-    "chokidar": "^1.6.1",
-    "css-loader": "^0.26.1",
-    "css-modules-require-hook": "^4.0.5",
-    "koa": "^2.0.0-alpha.8",
-    "koa-logger": "^2.0.1",
+    "koa": "^2.0.0",
     "koa-mount": "^2.0.0",
     "koa-router": "^7.0.1",
+    "koa-static": "^3.0.0",
     "koa-webpack-middleware": "^1.0.3",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.2",
-    "react-transform-hmr": "^1.0.4",
+    "react-router-dom": "^4.0.0-beta.6",
     "redux": "^3.6.0",
-    "style-loader": "^0.13.1",
     "webpack": "^2.2.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-plugin-css-modules-transform": "^1.2.1",
+    "babel-plugin-react-transform": "^2.0.2",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-babili": "0.0.11",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-preset-react-hmre": "^1.1.1",
+    "babili": "0.0.11",
+    "chokidar": "^1.6.1",
+    "css-loader": "^0.26.1",
+    "css-modules-require-hook": "^4.0.5",
+    "extract-text-webpack-plugin": "^2.0.0-rc.3",
+    "koa-logger": "^2.0.1",
+    "koa-webpack": "^0.3.0",
+    "react-transform-hmr": "^1.0.4",
+    "style-loader": "^0.13.1"
+  }
 }
