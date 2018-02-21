@@ -15,13 +15,11 @@ const entry = [
 ];
 
 const plugins = [
-  new webpack.NoEmitOnErrorsPlugin(),
   new ExtractTextPlugin('bundle.css'),
 ];
 
 if (isDevelopment) {
-  entry.push('webpack-hot-middleware/client');
-  plugins.push(new webpack.HotModuleReplacementPlugin());
+  plugins.push(new webpack.NamedModulesPlugin());
 } else {
   plugins.push(
     new webpack.DefinePlugin({
@@ -41,7 +39,7 @@ let cssLoader;
 if (isDevelopment) {
   cssLoader = 'style-loader!css-loader?' + qs.stringify({
     modules: true,
-    localIdentName: '[name]__[local]--[hash:base64:5]'
+    localIdentName: '[local]'
   });
 }
 else {
@@ -53,7 +51,7 @@ else {
         modules: true,
         sourceMap: false,
         minimize: true,
-        localIdentName: '[name]__[local]--[hash:base64:5]'
+        localIdentName: '[local]'
       }
     }
   });
@@ -81,22 +79,11 @@ module.exports = {
         loader: 'babel-loader',
         include: path.join(__dirname, './src/client'),
         query: {
-          presets: ["es2015", "react"],
+          presets: ["es2015", "react", "stage-0"],
           babelrc: false,
-          env: {
-            "development": {
-              "presets": ["react-hmre"],
-              "plugins": [
-                ["react-transform", {
-                  "transforms": [{
-                    "transform": "react-transform-hmr",
-                    "imports": ["react"],
-                    "locals": ["module"]
-                  }]
-                }]
-              ]
-            }
-          },
+          plugins: [
+            "react-hot-loader/babel",
+          ]
         }
       },
       {

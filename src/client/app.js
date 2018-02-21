@@ -7,9 +7,9 @@ import App from './components/App';
 const store = configureStore(window.initialStoreData);
 window.dev = { store };
 
-ReactDOM.render(
+ReactDOM.hydrate(
   <Provider store={store}>
     <App />
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

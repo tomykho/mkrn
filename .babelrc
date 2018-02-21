@@ -1,13 +1,15 @@
 {
   "presets": [
     "es2015",
-    "react"
+    "react",
+    "stage-0"
   ],
   "plugins": [
+    "react-hot-loader/babel",
     [
       "css-modules-transform",
       {
-        "generateScopedName": "[name]__[local]--[hash:base64:5]"
+        "generateScopedName": "[local]"
       }
     ]
   ]
